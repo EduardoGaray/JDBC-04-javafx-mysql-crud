@@ -1,19 +1,15 @@
 package controller;
 
-import library.Books;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import library.Books;
 
 import java.net.URL;
 import java.sql.*;
-
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -58,7 +54,17 @@ public class MainController implements Initializable {
     private TableColumn<Books, Integer> yearColumn;
 
     @FXML
+
     private TableColumn<Books, Integer> pagesColumn;
+    @FXML
+
+    private TableColumn<Books, String> colEditorial;
+
+    @FXML
+    private TextField txtBuscar;
+
+    @FXML
+    private ComboBox comboEditorial;
 
     @FXML
     private void insertButton() {
@@ -68,6 +74,7 @@ public class MainController implements Initializable {
             ps.setString(2, authorField.getText());
             ps.setInt(3, Integer.parseInt(yearField.getText()));
             ps.setInt(4, Integer.parseInt(pagesField.getText()));
+            ps.setString(5,comboEditorial.getValue().toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,7 +92,8 @@ public class MainController implements Initializable {
             ps.setString(2, authorField.getText());
             ps.setInt(3, Integer.parseInt(yearField.getText()));
             ps.setInt(4, Integer.parseInt(pagesField.getText()));
-            ps.setInt(5, Integer.parseInt(idField.getText()));
+            ps.setString(5, comboEditorial.getValue().toString());
+            ps.setInt(6,Integer.parseInt(idField.getText()));
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -104,6 +112,10 @@ public class MainController implements Initializable {
         }
 
         showBooks("");
+    }
+    @FXML
+    private void callBackBuscar(){
+        showBooks("SELECT * FROM BOOKS WHERE TITLE LIKE '%" + txtBuscar.getText() + "%'" );
     }
 
     @Override
@@ -134,7 +146,7 @@ public class MainController implements Initializable {
 			rs = st.executeQuery(consulta);
 			Books books;
 			while(rs.next()) {
-				books = new Books(rs.getInt("Id"),rs.getString("Title"),rs.getString("Author"),rs.getInt("Year"),rs.getInt("Pages"));
+				books = new Books(rs.getInt("Id"),rs.getString("Title"),rs.getString("Author"),rs.getInt("Year"),rs.getInt("Pages"),rs.getString("Editorial"));
 				booksList.add(books);
 				}
 		} catch (Exception e) {
@@ -155,6 +167,7 @@ public class MainController implements Initializable {
     	authorColumn.setCellValueFactory(new PropertyValueFactory<Books,String>("author"));
     	yearColumn.setCellValueFactory(new PropertyValueFactory<Books,Integer>("year"));
     	pagesColumn.setCellValueFactory(new PropertyValueFactory<Books,Integer>("pages"));
+        colEditorial.setCellValueFactory(new PropertyValueFactory<Books,String>("editorial"));
     	
     	tableView.setItems(list);
     }

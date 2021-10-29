@@ -7,8 +7,9 @@ public class Books {
     private String author;
     private int year;
     private int pages;
+    private String editorial;
 
-    public Books(int Id, String Title, String Author, int Year, int Pages){
+    public Books(int Id, String Title, String Author, int Year, int Pages, String editorial){
         this.id = Id;
     	this.title=Title;
         this.author = Author;
