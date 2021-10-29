@@ -72,7 +72,7 @@ public class MainController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    	showBooks();
+    	showBooks("");
     }
     
     @FXML 
@@ -90,7 +90,7 @@ public class MainController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        showBooks();
+        showBooks("");
     }
     
     @FXML
@@ -103,12 +103,12 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
 
-        showBooks();
+        showBooks("");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    	showBooks();
+    	showBooks("");
     }
     
     public Connection getConnection() {
@@ -123,16 +123,15 @@ public class MainController implements Initializable {
     	}
     }
     
-    public ObservableList<Books> getBooksList(){
+    public ObservableList<Books> getBooksList(String consulta){
     	ObservableList<Books> booksList = FXCollections.observableArrayList();
     	Connection connection = getConnection();
-    	String query = "SELECT * FROM books ";
     	Statement st;
     	ResultSet rs;
     	
     	try {
 			st = connection.createStatement();
-			rs = st.executeQuery(query);
+			rs = st.executeQuery(consulta);
 			Books books;
 			while(rs.next()) {
 				books = new Books(rs.getInt("Id"),rs.getString("Title"),rs.getString("Author"),rs.getInt("Year"),rs.getInt("Pages"));
@@ -145,8 +144,11 @@ public class MainController implements Initializable {
     }
     
     // I had to change ArrayList to ObservableList I didn't find another option to do this but this works :)
-    public void showBooks() {
-    	ObservableList<Books> list = getBooksList();
+    public void showBooks(String consulta) {
+        if(consulta.equals("")){
+            consulta="SELECT * FROM books";
+        }
+    	ObservableList<Books> list = getBooksList(consulta);
     	
     	idColumn.setCellValueFactory(new PropertyValueFactory<Books,Integer>("id"));
     	titleColumn.setCellValueFactory(new PropertyValueFactory<Books,String>("title"));
